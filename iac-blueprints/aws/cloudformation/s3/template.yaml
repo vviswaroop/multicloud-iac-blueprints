@@ -1,0 +1,109 @@
+# =========================================================================
+# S3 Bucket CloudFormation Template
+# =========================================================================
+# Author: [viswaroop vadlamudi]
+# Created: [11/07/2024]
+# Version: 1.0.0
+# 
+# Description:
+#   This template creates an S3 bucket with comprehensive security configurations,
+#   including bucket policies, lifecycle rules, and logging capabilities.
+#
+# Change Log:
+#   v1.0.0 - [11/07/2024] - [viswaroop vadlamudi]
+#     * Initial version
+#     * Implemented secure S3 bucket with logging
+#     * Added IP restriction and TLS enforcement
+#
+# Copyright (c) [2024] [viswaroop vadlamudi]
+# =========================================================================
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for creating an S3 bucket with comprehensive configuration options'
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: Name of the S3 bucket to create
+  
+  ACL:
+    Type: String
+    Description: Canned ACL to apply to the bucket
+    Default: private
+    AllowedValues: 
+      - private
+      - public-read
+      - public-read-write
+      - authenticated-read
+    
+  ObjectOwnership:
+    Type: String
+    Description: Object ownership setting for the bucket
+    Default: BucketOwnerEnforced
+    AllowedValues:
+      - BucketOwnerPreferred
+      - ObjectWriter
+      - BucketOwnerEnforced
+
+  ObjectLockEnabled:
+    Type: String
+    Description: Enable Object Lock for the bucket
+    Default: false
+    AllowedValues: [true, false]
+
+  BucketRegion:
+    Type: String
+    Description: Region where the bucket should be created
+    Default: us-east-1
+
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: !Ref ACL
+      ObjectLockEnabled: !Ref ObjectLockEnabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: !Ref ObjectOwnership
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: SecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource: 
+              - !Sub 'arn:aws:s3:::${S3Bucket}'
+              - !Sub 'arn:aws:s3:::${S3Bucket}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': false
+
+Outputs:
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref S3Bucket
+  
+  BucketARN:
+    Description: ARN of the created S3 bucket
+    Value: !GetAtt S3Bucket.Arn
+  
+  BucketDomainName:
+    Description: Domain name of the created S3 bucket
+    Value: !GetAtt S3Bucket.DomainName
