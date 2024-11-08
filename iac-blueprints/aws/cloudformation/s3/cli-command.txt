@@ -1,0 +1,9 @@
+aws cloudformation create-stack \
+  --stack-name my-s3-bucket-stack \
+  --template-body file://template.yaml \
+  --parameters \
+    ParameterKey=BucketName,ParameterValue=my-unique-bucket-name \
+    ParameterKey=ACL,ParameterValue=private \
+    ParameterKey=ObjectOwnership,ParameterValue=BucketOwnerEnforced \
+    ParameterKey=ObjectLockEnabled,ParameterValue=false \
+    ParameterKey=BucketRegion,ParameterValue=us-east-1
