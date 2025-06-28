@@ -1,0 +1,178 @@
+# GCP Microservices Platform - Example Terraform Variables
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Project Configuration
+project_id   = "my-gcp-project-id"
+project_name = "microservices-platform"
+environment  = "dev"  # Options: dev, staging, prod
+region       = "us-central1"
+replica_region = "us-east1"
+
+# Domain Configuration
+domain_name = "example.com"
+
+# Network Configuration
+vpc_cidr                  = "10.0.0.0/16"
+gke_subnet_cidr          = "10.0.1.0/24"
+gke_pods_cidr            = "10.1.0.0/16"
+gke_services_cidr        = "10.2.0.0/16"
+gke_master_cidr          = "10.3.0.0/28"
+private_subnet_cidr      = "10.0.2.0/24"
+mgmt_subnet_cidr         = "10.0.3.0/24"
+authorized_networks_cidr = "0.0.0.0/0"  # Restrict this in production!
+
+# GKE Configuration
+gke_node_count                = 2
+gke_machine_type             = "e2-standard-4"      # 4 vCPU, 16GB RAM
+gke_high_memory_machine_type = "n2-highmem-4"      # 4 vCPU, 32GB RAM
+
+# Cloud SQL Configuration
+cloudsql_tier         = "db-custom-2-8192"    # 2 vCPU, 8GB RAM
+cloudsql_replica_tier = "db-custom-1-4096"    # 1 vCPU, 4GB RAM
+cloudsql_disk_size    = 100                   # GB
+
+# Database Credentials
+# IMPORTANT: In production, use environment variables or a secret management system
+# Example: export TF_VAR_db_backend_password="your-secure-password"
+db_backend_password  = "change-me-secure-password-123!"
+db_readonly_password = "change-me-readonly-password-456!"
+
+# Bastion Host Configuration
+bastion_internal_ip = "10.0.3.10"
+
+# Monitoring and Observability
+enable_monitoring = true
+enable_logging    = true
+log_retention_days = 30
+
+# Security Configuration
+enable_binary_authorization = false  # Set to true for production
+enable_workload_identity   = true
+enable_network_policy      = true
+enable_private_cluster     = true
+
+# Backup and Disaster Recovery
+backup_retention_days     = 30
+enable_cross_region_backup = false  # Set to true for production
+
+# Cost Optimization
+enable_preemptible_nodes   = true   # Set to false for production
+enable_cluster_autoscaling = true
+min_node_count            = 1       # Increase for production
+max_node_count            = 10
+
+# Feature Flags
+enable_istio           = false
+enable_cloud_run      = false
+enable_config_connector = false
+
+# Resource Limits
+cpu_limit    = 100  # Maximum CPU cores
+memory_limit = 400  # Maximum memory in GB
+
+# =====================================================
+# Environment-Specific Examples
+# =====================================================
+
+# Development Environment Example:
+# environment = "dev"
+# gke_node_count = 1
+# gke_machine_type = "e2-standard-2"
+# cloudsql_tier = "db-custom-1-4096"
+# enable_preemptible_nodes = true
+# backup_retention_days = 7
+# enable_binary_authorization = false
+
+# Staging Environment Example:
+# environment = "staging"
+# gke_node_count = 2
+# gke_machine_type = "e2-standard-4"
+# cloudsql_tier = "db-custom-2-8192"
+# enable_preemptible_nodes = false
+# backup_retention_days = 14
+# enable_binary_authorization = true
+
+# Production Environment Example:
+# environment = "prod"
+# gke_node_count = 3
+# gke_machine_type = "e2-standard-8"
+# cloudsql_tier = "db-custom-4-16384"
+# enable_preemptible_nodes = false
+# backup_retention_days = 30
+# enable_cross_region_backup = true
+# enable_binary_authorization = true
+# authorized_networks_cidr = "203.0.113.0/24"  # Your office IP range
+# min_node_count = 3
+# max_node_count = 20
+
+# =====================================================
+# Machine Type Options
+# =====================================================
+
+# Standard Machine Types:
+# e2-standard-2:  2 vCPU,  8GB RAM  (Cost-effective for dev)
+# e2-standard-4:  4 vCPU, 16GB RAM  (Good for staging)
+# e2-standard-8:  8 vCPU, 32GB RAM  (Good for production)
+# e2-standard-16: 16 vCPU, 64GB RAM (High-performance production)
+
+# High-Memory Machine Types:
+# n2-highmem-2:  2 vCPU, 16GB RAM
+# n2-highmem-4:  4 vCPU, 32GB RAM
+# n2-highmem-8:  8 vCPU, 64GB RAM
+# n2-highmem-16: 16 vCPU, 128GB RAM
+
+# =====================================================
+# Cloud SQL Tier Options
+# =====================================================
+
+# Standard Tiers:
+# db-custom-1-4096:  1 vCPU,  4GB RAM  (Development)
+# db-custom-2-8192:  2 vCPU,  8GB RAM  (Staging)
+# db-custom-4-16384: 4 vCPU, 16GB RAM  (Production)
+# db-custom-8-32768: 8 vCPU, 32GB RAM  (High-performance)
+
+# Shared-core Tiers (for development):
+# db-f1-micro: 1 shared vCPU, 0.6GB RAM
+# db-g1-small: 1 shared vCPU, 1.7GB RAM
+
+# =====================================================
+# Security Best Practices
+# =====================================================
+
+# 1. Never commit sensitive values to version control
+# 2. Use environment variables for passwords: export TF_VAR_db_backend_password="..."
+# 3. Restrict authorized_networks_cidr to your office/VPN IP ranges
+# 4. Enable binary authorization in production
+# 5. Use private clusters (enable_private_cluster = true)
+# 6. Enable network policies (enable_network_policy = true)
+# 7. Regularly rotate database passwords
+# 8. Enable audit logging for compliance
+
+# =====================================================
+# Cost Optimization Tips
+# =====================================================
+
+# 1. Use preemptible nodes for non-production environments
+# 2. Enable cluster autoscaling to scale down during low usage
+# 3. Choose appropriate machine types for your workload
+# 4. Set up budget alerts in GCP Console
+# 5. Use committed use discounts for predictable workloads
+# 6. Monitor resource utilization and right-size instances
+# 7. Delete unused resources regularly
+
+# =====================================================
+# Networking Considerations
+# =====================================================
+
+# Default CIDR allocations:
+# VPC:           10.0.0.0/16   (65,536 IPs)
+# GKE Subnet:    10.0.1.0/24   (254 IPs)
+# GKE Pods:      10.1.0.0/16   (65,536 IPs)
+# GKE Services:  10.2.0.0/16   (65,536 IPs)
+# Private:       10.0.2.0/24   (254 IPs)
+# Management:    10.0.3.0/24   (254 IPs)
+
+# Adjust these ranges based on your specific requirements:
+# - More pods? Increase pod CIDR range
+# - More services? Increase service CIDR range
+# - More subnets? Expand VPC or add additional CIDRs

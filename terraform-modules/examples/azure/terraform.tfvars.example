@@ -1,0 +1,180 @@
+# Azure Terraform Example Configuration
+# Copy this file to terraform.tfvars and customize the values
+
+# Basic Configuration
+environment = "prod"
+project     = "enterprise-app"
+location    = "East US"
+
+# Network Configuration
+vnet_address_space = ["10.0.0.0/16"]
+
+# Kubernetes Configuration
+kubernetes_version = "1.28.5"
+
+# SQL Server Configuration
+sql_admin_username = "sqladmin"
+
+# Administrator Configuration
+admin_email = "admin@yourcompany.com"
+
+# Security Configuration - AKS API Server Access
+# Add your office/VPN IP ranges for AKS API server access
+authorized_ip_ranges = [
+  "203.0.113.0/24",    # Example: Office network
+  "198.51.100.0/24"    # Example: VPN network
+]
+
+# Azure AD User Configuration
+# Replace with actual Azure AD user object IDs
+developer_user_ids = [
+  "12345678-1234-1234-1234-123456789012",  # Developer 1
+  "12345678-1234-1234-1234-123456789013"   # Developer 2
+]
+
+operator_user_ids = [
+  "12345678-1234-1234-1234-123456789014",  # Operator 1
+  "12345678-1234-1234-1234-123456789015"   # Operator 2
+]
+
+# Feature Flags
+enable_monitoring               = true
+enable_backup                  = true
+enable_private_endpoints       = true
+enable_ddos_protection         = false
+network_watcher_enabled        = true
+enable_container_insights      = true
+enable_azure_policy           = true
+enable_workload_identity      = true
+enable_oidc_issuer            = true
+
+# Retention and Backup Settings
+backup_retention_days = 30
+log_retention_days   = 30
+
+# VM Configuration
+vm_size_web = "Standard_D2s_v3"
+vm_size_app = "Standard_D4s_v3"
+
+# AKS Node Configuration
+aks_system_node_count = 3
+aks_user_node_count   = 2
+
+# Storage Configuration
+storage_account_tier      = "Standard"
+storage_replication_type  = "GRS"
+
+# Application Gateway Configuration
+application_gateway_sku      = "Standard_v2"
+application_gateway_capacity = 2
+
+# Security Settings
+key_vault_firewall_bypass_azure_services = true
+sql_threat_detection_enabled             = true
+sql_vulnerability_assessment_enabled     = true
+
+# Optional SSL Configuration (uncomment and configure if using custom domain)
+# ssl_certificate_path     = "/path/to/certificate.pfx"
+# ssl_certificate_password = "your-certificate-password"
+# custom_domain_name       = "app.yourcompany.com"
+
+# DDoS Protection (uncomment if enabling DDoS protection)
+# ddos_protection_plan_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/ddosProtectionPlans/myDdosProtectionPlan"
+
+# Resource Tags
+tags = {
+  Environment     = "Production"
+  Project         = "Enterprise Application"
+  ManagedBy       = "Terraform"
+  CostCenter      = "IT-Infrastructure"
+  Owner           = "Platform Team"
+  BusinessUnit    = "Technology"
+  Application     = "Web Application"
+  Compliance      = "Required"
+  Backup          = "Required"
+  Monitoring      = "Required"
+  DataClass       = "Internal"
+  Criticality     = "High"
+  MaintenanceWindow = "Sunday 02:00-06:00 UTC"
+  SupportContact  = "platform-team@yourcompany.com"
+  
+  # Cost Management Tags
+  Department      = "IT"
+  BudgetCode      = "IT-INFRA-2024"
+  
+  # Compliance Tags
+  ComplianceScope = "SOC2,ISO27001"
+  DataResidency   = "US"
+  
+  # Operational Tags
+  BackupSchedule  = "Daily"
+  MonitoringLevel = "Enhanced"
+  AutoScaling     = "Enabled"
+  
+  # Application Tags
+  Tier           = "Multi-Tier"
+  Framework      = "Cloud-Native"
+  Runtime        = "Container,VM"
+}
+
+# Advanced Configuration Examples (uncomment as needed)
+
+# Custom Network Configuration
+# vnet_address_space = ["10.0.0.0/16", "10.1.0.0/16"]  # Multiple address spaces
+
+# Multi-Region Configuration (for disaster recovery)
+# secondary_location = "West US 2"
+
+# Advanced AKS Configuration
+# aks_additional_node_pools = {
+#   gpu = {
+#     vm_size            = "Standard_NC6s_v3"
+#     node_count         = 1
+#     enable_auto_scaling = true
+#     min_count          = 0
+#     max_count          = 5
+#     node_taints        = ["nvidia.com/gpu=true:NoSchedule"]
+#     node_labels = {
+#       "accelerator" = "nvidia"
+#     }
+#   }
+# }
+
+# Custom Security Rules
+# additional_nsg_rules = {
+#   web = [
+#     {
+#       name                   = "AllowCustomApp"
+#       priority               = 1010
+#       direction              = "Inbound"
+#       access                 = "Allow"
+#       protocol               = "Tcp"
+#       source_port_range      = "*"
+#       destination_port_range = "8443"
+#       source_address_prefix  = "10.0.0.0/16"
+#       destination_address_prefix = "*"
+#     }
+#   ]
+# }
+
+# Development Environment Overrides (copy to dev.tfvars)
+# environment                           = "dev"
+# aks_system_node_count                = 1
+# aks_user_node_count                  = 1
+# storage_replication_type             = "LRS"
+# backup_retention_days                = 7
+# log_retention_days                   = 30
+# enable_ddos_protection               = false
+# sql_threat_detection_enabled         = false
+# sql_vulnerability_assessment_enabled = false
+# vm_size_web                          = "Standard_B2s"
+# vm_size_app                          = "Standard_B2s"
+
+# Staging Environment Overrides (copy to staging.tfvars)
+# environment              = "staging"
+# aks_system_node_count   = 2
+# aks_user_node_count     = 1
+# storage_replication_type = "LRS"
+# backup_retention_days    = 14
+# vm_size_web             = "Standard_D2s_v3"
+# vm_size_app             = "Standard_D2s_v3"
