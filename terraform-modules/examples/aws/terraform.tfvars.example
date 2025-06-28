@@ -1,0 +1,101 @@
+# ========================================
+# General Configuration
+# ========================================
+aws_region   = "us-west-2"
+project_name = "webapp"
+environment  = "prod"
+
+common_tags = {
+  Project     = "3-tier-web-app"
+  Environment = "production"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps Team"
+  CostCenter  = "Engineering"
+  Backup      = "required"
+}
+
+# ========================================
+# Network Configuration
+# ========================================
+vpc_cidr      = "10.0.0.0/16"
+az_count      = 3
+single_nat_gateway = false  # Set to true for cost optimization in dev/test
+
+public_subnet_cidrs = [
+  "10.0.1.0/24",   # AZ-1 Public
+  "10.0.2.0/24",   # AZ-2 Public  
+  "10.0.3.0/24"    # AZ-3 Public
+]
+
+private_subnet_cidrs = [
+  "10.0.10.0/24",  # AZ-1 Private
+  "10.0.20.0/24",  # AZ-2 Private
+  "10.0.30.0/24"   # AZ-3 Private
+]
+
+# ========================================
+# Security Configuration
+# ========================================
+key_pair_name = "my-key-pair"  # Replace with your actual key pair name
+create_bastion = true
+
+# Restrict bastion access to your IP range
+bastion_allowed_cidrs = [
+  "203.0.113.0/24"  # Replace with your actual IP range
+]
+
+# ========================================
+# Web Tier Configuration
+# ========================================
+web_server_count   = 3
+web_instance_type  = "t3.large"  # Adjust based on expected load
+
+# ========================================
+# Database Configuration
+# ========================================
+db_instance_class       = "db.t3.medium"     # Production: consider db.r6i.large or higher
+db_allocated_storage    = 100
+db_max_allocated_storage = 1000
+db_name                 = "webapp"
+db_username             = "admin"
+db_multi_az            = true                # Enable for production high availability
+
+# ========================================
+# EKS Configuration
+# ========================================
+kubernetes_version = "1.28"
+
+eks_node_instance_types = [
+  "t3.large"  # Production: consider m5.large, c5.large, or r5.large
+]
+
+eks_node_desired_size = 3
+eks_node_min_size     = 2
+eks_node_max_size     = 6
+
+# Restrict EKS API access (optional - for enhanced security)
+eks_public_access_cidrs = [
+  "203.0.113.0/24"  # Replace with your actual IP range
+]
+
+enable_fargate = false  # Set to true if you want to use Fargate
+
+# ========================================
+# High Availability & Security
+# ========================================
+enable_deletion_protection = true  # Enable for production
+
+# ========================================
+# Development/Testing Overrides
+# ========================================
+# For development/testing environments, consider these overrides:
+#
+# single_nat_gateway = true
+# web_server_count = 1
+# web_instance_type = "t3.micro"
+# db_instance_class = "db.t3.micro"
+# db_multi_az = false
+# eks_node_desired_size = 1
+# eks_node_min_size = 1
+# eks_node_max_size = 2
+# enable_deletion_protection = false
